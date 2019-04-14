@@ -101,6 +101,9 @@ class ShowHide(object):
 				for child in heading.children:
 					open_fold(child)
 			else:
+				# Hack
+				close_fold(heading)
+
 				vim.command(u_encode(u'%d,%dfoldclose!' % (heading.start_vim, heading.end_of_last_child_vim)))
 
 				if heading.number_of_parents:
