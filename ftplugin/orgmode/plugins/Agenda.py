@@ -49,7 +49,7 @@ class Agenda(object):
 		quite a few ways to open buffers in vimorgmode.
 		"""
 		cmds = [
-			u'botright split org:%s' % bufname,
+			u'e org:%s' % bufname,
 			u'setlocal buftype=nofile',
 			u'setlocal modifiable',
 			u'setlocal nonumber',
