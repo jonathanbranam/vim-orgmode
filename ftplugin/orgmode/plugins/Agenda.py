@@ -96,7 +96,10 @@ class Agenda(object):
 
 		# load the agenda files into buffers
 		for agenda_file in agenda_files:
-			vim.command(u_encode(u'badd %s' % agenda_file.replace(" ", "\ ")))
+			try:
+				vim.command(u_encode(u'badd %s' % agenda_file.replace(" ", "\ ")))
+			except:
+				continue
 
 		# determine the buffer nr of the agenda files
 		agenda_nums = [get_bufnumber(fn) for fn in agenda_files]
