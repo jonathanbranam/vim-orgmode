@@ -154,7 +154,7 @@ class Agenda(object):
 
 	@classmethod
 	def list_next_week_for(cls, agenda_documents):
-		raw_agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(
+		raw_agenda = ORGMODE.agenda_manager.get_next_week_or_active_todo(
 			agenda_documents)
 
 		# if raw_agenda is empty, return directly
@@ -170,10 +170,28 @@ class Agenda(object):
 		#     line in agenda buffer --> source document
 		# It's easy to jump to the right document this way
 		cls.line2doc = {}
-		# format text for agenda
-		last_date = raw_agenda[0].active_date
-		final_agenda = [u'Week Agenda:', unicode(last_date)]
-		for i, h in enumerate(raw_agenda):
+		# Create the ongoing todo section
+		raw_agenda_todo = sorted([h for h in raw_agenda if h.active_date == None])
+		final_agenda_todo = []
+		for i, h in enumerate(raw_agenda_todo):
+			tmp = u"%s %s" % (h.todo, h.title)
+			final_agenda_todo.append(tmp)
+			cls.line2doc[len(final_agenda_todo)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
+		if len(final_agenda_todo) > 0:
+			final_agenda_todo.append('')
+
+		# Create the weekly section
+		raw_agenda_weekly = sorted([h for h in raw_agenda if h.active_date != None])
+
+
+		if len(raw_agenda_weekly) > 0:
+			last_date = raw_agenda_weekly[0].active_date
+		else:
+			last_date = ''
+
+		final_agenda_weekly = [u'Week Agenda:', unicode(last_date)]
+
+		for i, h in enumerate(raw_agenda_weekly):
 			# insert date information for every new date (not datetime)
 			if unicode(h.active_date)[1:11] != unicode(last_date)[1:11]:
 				today = date.today()
@@ -182,10 +200,10 @@ class Agenda(object):
 					h.active_date.month == today.month and \
 					h.active_date.day == today.day:
 					section = unicode(h.active_date) + u" TODAY"
-					today_row = len(final_agenda) + 1
+					today_row = len(final_agenda_weekly) + 1
 				else:
 					section = unicode(h.active_date)
-				final_agenda.append(section)
+				final_agenda_weekly.append(section)
 
 				# update last_date
 				last_date = h.active_date
@@ -198,10 +216,11 @@ class Agenda(object):
 				'todo': h.todo,
 				'title': h.title
 			}
-			final_agenda.append(formated)
-			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
+			final_agenda_weekly.append(formated)
+			cls.line2doc[len(final_agenda_todo)+len(final_agenda_weekly)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
+		final_agenda = final_agenda_todo + final_agenda_weekly
 		vim.current.buffer[:] = [u_encode(i) for i in final_agenda]
 		vim.command(u_encode(u'setlocal nomodifiable  conceallevel=2 concealcursor=nc'))
 		# try to jump to the positon of today

@@ -13,7 +13,7 @@ u"""
 """
 
 from orgmode.liborgmode.agendafilter import filter_items
-from orgmode.liborgmode.agendafilter import is_within_week_and_active_todo
+from orgmode.liborgmode.agendafilter import is_within_week_or_active_todo
 from orgmode.liborgmode.agendafilter import contains_active_todo
 from orgmode.liborgmode.agendafilter import contains_active_date
 
@@ -36,7 +36,7 @@ class AgendaManager(object):
 								[contains_active_todo]))
 		return sorted(filtered)
 
-	def get_next_week_and_active_todo(self, documents):
+	def get_next_week_or_active_todo(self, documents):
 		u"""
 		Get the agenda for next week for the given documents (list of
 		document).
@@ -45,7 +45,7 @@ class AgendaManager(object):
 		for document in iter(documents):
 			# filter and return headings
 			filtered.extend(filter_items(document.all_headings(),
-								[is_within_week_and_active_todo]))
+								[is_within_week_or_active_todo]))
 		return sorted(filtered)
 
 	def get_timestamped_items(self, documents):
