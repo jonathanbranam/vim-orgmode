@@ -167,7 +167,7 @@ class Agenda(object):
 
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgagenda', ]
-		cls._switch_to(u'AGENDA', cmd)
+		cls._switch_to(u'AGENDA_WEEK', cmd)
 
 		# line2doc is a dic with the mapping:
 		#     line in agenda buffer --> source document
@@ -253,7 +253,7 @@ class Agenda(object):
 		cls.line2doc = {}
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgagenda']
-		cls._switch_to(u'AGENDA', cmd)
+		cls._switch_to(u'AGENDA_TODO', cmd)
 
 		# format text of agenda
 		final_agenda = []
@@ -277,7 +277,7 @@ class Agenda(object):
 
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgagenda']
-		cls._switch_to(u'AGENDA', cmd)
+		cls._switch_to(u'AGENDA_TIMELINE', cmd)
 
 		cls.line2doc = {}
 		# format text of agenda
